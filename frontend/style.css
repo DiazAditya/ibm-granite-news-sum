@@ -1,0 +1,158 @@
+/* File: frontend/style.css */
+
+/* --- Import Font & Reset Dasar --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #F9F9F9; /* Putih sedikit keabuan agar tidak silau */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* --- Wadah Utama --- */
+.container {
+    width: 100%;
+    max-width: 700px;
+    background-color: #FFFFFF;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+header h1 span {
+    color: #E63946; /* Aksen merah */
+}
+
+header p {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* --- Area Input --- */
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+#articleUrl {
+    flex-grow: 1;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 1px solid #DDD;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#articleUrl:focus {
+    outline: none;
+    border-color: #E63946;
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
+}
+
+#summarizeBtn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #E63946;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#summarizeBtn:hover {
+    background-color: #D9303D;
+    transform: translateY(-2px);
+}
+
+/* --- Indikator Loading (Spinner) --- */
+.loader {
+    border: 5px solid #f3f3f3; /* Lingkaran abu-abu */
+    border-top: 5px solid #E63946; /* Bagian merah yang berputar */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 30px auto;
+    display: none; /* Sembunyi secara default */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- Kontainer Hasil --- */
+#resultContainer {
+    text-align: left;
+    margin-top: 30px;
+    padding: 30px;
+    border: 1px solid #EEE;
+    border-radius: 12px;
+    background-color: #FAFAFA;
+    display: none; /* Sembunyi secara default */
+}
+
+#resultContainer h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #E63946;
+    padding-bottom: 10px;
+}
+
+#resultContainer h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#resultContainer p {
+    line-height: 1.7;
+    color: #444;
+}
+
+#resultContainer ul {
+    list-style-position: inside;
+    padding-left: 10px;
+}
+
+#resultContainer li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: #444;
+}
+
+footer {
+    margin-top: 40px; /* Memberi jarak dari konten di atasnya */
+    padding-top: 20px;
+    border-top: 1px solid #EEEEEE; /* Garis pemisah tipis */
+    text-align: center;
+}
+
+footer p {
+    font-size: 0.8rem; /* Ukuran font lebih kecil */
+    color: #AAAAAA; /* Warna abu-abu muda agar tidak mencolok */
+    font-weight: 400;
+}

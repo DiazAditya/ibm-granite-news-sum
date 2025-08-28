@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Rangkum Berita</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Rangkum<span>.</span>Berita</h1>
+            <p>Hemat waktu Anda. Dapatkan inti dari artikel berita apapun hanya dengan sekali klik.</p>
+        </header>
+
+        <main>
+            <div class="input-area">
+                <input type="url" id="articleUrl" placeholder="Tempelkan URL artikel berita di sini...">
+                <button id="summarizeBtn">Rangkum</button>
+            </div>
+
+            <div class="loader" id="loader"></div>
+
+            <div id="resultContainer">
+                <h2>Hasil Ringkasan</h2>
+                
+                <h4>Ringkasan Paragraf</h4>
+                <p id="summaryParagraph"></p>
+                
+                <h4>Poin-Poin Utama</h4>
+                <ul id="summaryPoints"></ul>
+            </div>
+        </main>
+        <footer>
+        <p>Powered by IBM Granite 3.3 8B Instruct</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
