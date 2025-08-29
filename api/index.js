@@ -6,7 +6,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const app = express();
-const port = 3000;
+//const port = 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -128,6 +128,6 @@ app.post('/summarize', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+/*app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
-});
+});*/

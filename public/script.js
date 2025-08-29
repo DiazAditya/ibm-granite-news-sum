@@ -1,7 +1,7 @@
 const summarizeBtn = document.getElementById('summarizeBtn');
 const articleUrlInput = document.getElementById('articleUrl');
 const resultContainer = document.getElementById('resultContainer');
-const loader = document.getElementById('loader'); // Diperbarui dari loadingIndicator ke loader
+const loader = document.getElementById('loader');
 const summaryParagraph = document.getElementById('summaryParagraph');
 const summaryPoints = document.getElementById('summaryPoints');
 
@@ -14,10 +14,10 @@ summarizeBtn.addEventListener('click', async () => {
 
     loader.style.display = 'block';
     resultContainer.style.display = 'none';
-    summaryPoints.innerHTML = ''; // Kosongkan list sebelumnya
+    summaryPoints.innerHTML = ''; 
 
     try {
-        const response = await fetch('http://localhost:3000/summarize', {
+        const response = await fetch('/api', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
