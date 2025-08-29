@@ -1,49 +1,34 @@
+// File: public/script.js (Versi Tes Hello World)
+
 const summarizeBtn = document.getElementById('summarizeBtn');
 const articleUrlInput = document.getElementById('articleUrl');
-const resultContainer = document.getElementById('resultContainer');
-const loader = document.getElementById('loader');
-const summaryParagraph = document.getElementById('summaryParagraph');
-const summaryPoints = document.getElementById('summaryPoints');
 
 summarizeBtn.addEventListener('click', async () => {
-    const url = articleUrlInput.value;
-    if (!url || !url.startsWith('http')) {
-        alert('Silakan masukkan URL artikel yang valid!');
-        return;
+  console.log("Tombol diklik, mencoba fetch ke /api...");
+  alert("Mencoba menghubungi backend...");
+
+  try {
+    const response = await fetch('/api', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Kita kirim body kosong saja untuk tes
+      body: JSON.stringify({ url: "test" }),
+    });
+
+    // Cek apakah response dari server OK (status 200-299)
+    if (!response.ok) {
+      throw new Error(`Server merespons dengan status: ${response.status}`);
     }
 
-    loader.style.display = 'block';
-    resultContainer.style.display = 'none';
-    summaryPoints.innerHTML = ''; 
+    // Jika berhasil, ambil data JSON dan tampilkan
+    const data = await response.json();
+    console.log("Data diterima dari backend:", data);
+    alert(`BERHASIL! Pesan dari backend: ${data.message}`);
 
-    try {
-        const response = await fetch('/api', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: url }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Gagal merangkum artikel.');
-        }
-
-        const data = await response.json();
-        
-        summaryParagraph.textContent = data.ringkasan_paragraf;
-        data.poin_utama.forEach(point => {
-            const li = document.createElement('li');
-            li.textContent = point;
-            summaryPoints.appendChild(li);
-        });
-
-        resultContainer.style.display = 'block';
-
-    } catch (error) {
-        alert('Terjadi kesalahan: ' + error.message);
-    } finally {
-        loader.style.display = 'none';
-    }
+  } catch (error) {
+    console.error("Fetch gagal:", error);
+    alert(`GAGAL! Terjadi error saat menghubungi backend: ${error.message}`);
+  }
 });
