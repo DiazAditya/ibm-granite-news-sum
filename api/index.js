@@ -16,7 +16,7 @@ const replicate = new Replicate({
 });
 
 
-app.post('/summarize', async (req, res) => {
+app.post('/', async (req, res) => {
   const { url } = req.body;
 
   if (!url) {
