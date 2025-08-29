@@ -19,7 +19,7 @@ summarizeBtn.addEventListener('click', async () => {
     summaryPoints.innerHTML = ''; // Kosongkan list sebelumnya
 
     try {
-        const response = await fetch('http://localhost:3000/summarize', {
+        const response = await fetch('/api', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

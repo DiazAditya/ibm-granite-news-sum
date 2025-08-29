@@ -12,7 +12,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const app = express();
-const port = 3000;
+//const port = 3000;
 
 // Middleware
 app.use(cors());
@@ -145,7 +145,10 @@ app.post('/summarize', async (req, res) => {
 });
 
 
-// --- Bagian 3: Menjalankan Server ---
+/*
 app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
 });
+*/
+
+module.exports = app;
