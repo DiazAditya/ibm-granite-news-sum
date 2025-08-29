@@ -1,3 +1,9 @@
+// ======================================================
+// File: backend/server.js
+// Versi Lengkap dengan Dynamic Scraper & Robust Parsing
+// ======================================================
+
+// --- Bagian 1: Inisialisasi & Setup ---
 require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const Replicate = require('replicate');
@@ -6,17 +12,20 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const app = express();
-//const port = 3000;
+const port = 3000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Inisialisasi Replicate Client
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
 
-app.post('/', async (req, res) => {
+// --- Bagian 2: Endpoint Utama untuk Merangkum Berita ---
+app.post('/summarize', async (req, res) => {
   const { url } = req.body;
 
   if (!url) {
@@ -51,7 +60,7 @@ app.post('/', async (req, res) => {
     let bestText = '';
     let bestSelector = '';
 
-    
+    // Loop melalui setiap selector dan cari yang menghasilkan teks terbanyak
     potentialSelectors.forEach(selector => {
         let currentText = '';
         $(selector).each((i, el) => {
@@ -71,6 +80,7 @@ app.post('/', async (req, res) => {
         return res.status(400).json({ error: 'Tidak dapat mengekstrak konten artikel yang cukup dari URL ini.' });
     }
 
+    // --- Langkah B: Prompt Engineering ---
     const prompt = `
     Anda adalah seorang editor berita AI yang sangat andal. Tugas Anda adalah membaca artikel berita dan membuat rangkuman yang netral dan informatif.
 
@@ -88,6 +98,7 @@ app.post('/', async (req, res) => {
     }
     `;
 
+    // --- Langkah C: Panggil Replicate API ---
     console.log('[INFO] Menghubungi Replicate API, mohon tunggu...');
     const modelIdentifier = "ibm-granite/granite-3.3-8b-instruct";
     
@@ -100,17 +111,20 @@ app.post('/', async (req, res) => {
         }
     });
 
+    // --- Langkah D: Parsing Respons dari AI ---
     const resultString = output.join('');
     console.log("--- OUTPUT MENTAH DARI AI ---");
     console.log(resultString);
     console.log("-----------------------------");
 
     try {
+        // Mencoba mem-parsing JSON secara langsung
         const resultJson = JSON.parse(resultString);
         console.log('[SUCCESS] Parsing JSON langsung berhasil.');
         res.json(resultJson);
     } catch (parseError) {
         console.warn('[WARNING] Parsing JSON langsung gagal, mencoba metode ekstraksi...');
+        // Jika parsing langsung gagal, coba ekstrak blok JSON dari dalam teks
         const jsonMatch = resultString.match(/\{[\s\S]*\}/);
         if (jsonMatch && jsonMatch[0]) {
             console.log('[INFO] Menemukan blok JSON, mencoba parsing ulang...');
@@ -118,18 +132,20 @@ app.post('/', async (req, res) => {
             console.log('[SUCCESS] Parsing ulang (ekstraksi) berhasil.');
             res.json(extractedJson);
         } else {
+            // Jika tidak ditemukan blok JSON sama sekali
             throw new Error('Output AI tidak mengandung format JSON yang valid.');
         }
     }
 
   } catch (error) {
+    // Penanganan error utama
     console.error('[FATAL] Terjadi error di proses utama:', error.message);
     res.status(500).json({ error: 'Terjadi kesalahan internal saat memproses permintaan Anda.' });
   }
 });
 
-module.exports = app;
 
-/*app.listen(port, () => {
+// --- Bagian 3: Menjalankan Server ---
+app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
-});*/
+});

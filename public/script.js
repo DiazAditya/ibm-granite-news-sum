@@ -1,7 +1,8 @@
+// File: frontend/script.js
 const summarizeBtn = document.getElementById('summarizeBtn');
 const articleUrlInput = document.getElementById('articleUrl');
 const resultContainer = document.getElementById('resultContainer');
-const loader = document.getElementById('loader');
+const loader = document.getElementById('loader'); // Diperbarui dari loadingIndicator ke loader
 const summaryParagraph = document.getElementById('summaryParagraph');
 const summaryPoints = document.getElementById('summaryPoints');
 
@@ -12,12 +13,13 @@ summarizeBtn.addEventListener('click', async () => {
         return;
     }
 
+    // Tampilkan loader & sembunyikan hasil sebelumnya
     loader.style.display = 'block';
     resultContainer.style.display = 'none';
-    summaryPoints.innerHTML = ''; 
+    summaryPoints.innerHTML = ''; // Kosongkan list sebelumnya
 
     try {
-        const response = await fetch('/api', {
+        const response = await fetch('http://localhost:3000/summarize', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,6 +34,7 @@ summarizeBtn.addEventListener('click', async () => {
 
         const data = await response.json();
         
+        // Tampilkan hasil
         summaryParagraph.textContent = data.ringkasan_paragraf;
         data.poin_utama.forEach(point => {
             const li = document.createElement('li');
@@ -44,6 +47,7 @@ summarizeBtn.addEventListener('click', async () => {
     } catch (error) {
         alert('Terjadi kesalahan: ' + error.message);
     } finally {
+        // Sembunyikan loader
         loader.style.display = 'none';
     }
 });
