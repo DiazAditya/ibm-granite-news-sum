@@ -128,6 +128,8 @@ app.post('/', async (req, res) => {
   }
 });
 
+module.exports = app;
+
 /*app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
 });*/
