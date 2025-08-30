@@ -1,21 +1,18 @@
 {
-  "name": "news_sum",
+  "name": "news-summarizer",
   "version": "1.0.0",
-  "main": "api/index.js",
+  "description": "A web app to summarize news articles using Node.js and the IBM Granite AI model via Replicate API.",
+  "main": "index.js",
   "scripts": {
-    "start": "node api/index.js",
-    
+    "start": "node index.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "axios": "^1.11.0",
-    "cheerio": "^1.1.2",
+    "axios": "^1.7.2",
+    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "replicate": "^1.1.0"
+    "express": "^4.19.2",
+    "replicate": "^0.29.1"
   }
 }

@@ -1,10 +1,9 @@
-// File: api/index.js (VERSI FINAL UNTUK VERCEL)
-
 const express = require('express');
 const Replicate = require('replicate');
 const cors = require('cors');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const path = require('path');
 
 const app = express();
 
@@ -12,57 +11,32 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Inisialisasi Replicate Client
-// Vercel akan otomatis memasukkan Environment Variable, jadi dotenv tidak diperlukan.
+// Inisialisasi Replicate Client (Tanpa dotenv)
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-// Endpoint utama
-app.post('/', async (req, res) => {
+// Rute untuk API summarization
+app.post('/api', async (req, res) => {
   const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: 'URL is required' });
-  }
+  if (!url) return res.status(400).json({ error: 'URL is required' });
 
   try {
-    const { data } = await axios.get(url, {
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-    });
+    const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36' } });
     const $ = cheerio.load(data);
-    
-    const potentialSelectors = [
-        '.detail__body-text p', '.read__content p', '.detail_text p', 'article .post-content p',
-        'div[class*="content"] p', 'div[class*="body"] p', 'div[class*="main"] p', 'article p', 'main p', '.post p'
-    ];
+    const potentialSelectors = [ '.detail__body-text p', '.read__content p', '.detail_text p', 'article .post-content p', 'div[class*="content"] p', 'div[class*="body"] p', 'div[class*="main"] p', 'article p', 'main p', '.post p' ];
     let bestText = '';
     potentialSelectors.forEach(selector => {
         let currentText = '';
         $(selector).each((i, el) => { currentText += $(el).text() + '\n'; });
         if (currentText.length > bestText.length) bestText = currentText;
     });
-
     const articleText = bestText;
-    if (articleText.length < 150) {
-        return res.status(400).json({ error: 'Tidak dapat mengekstrak konten artikel yang cukup dari URL ini.' });
-    }
+    if (articleText.length < 150) return res.status(400).json({ error: 'Tidak dapat mengekstrak konten artikel yang cukup.' });
 
     const prompt = `Anda adalah seorang editor berita AI yang sangat andal. Tugas Anda adalah membaca artikel berita dan membuat rangkuman yang netral dan informatif. Berikut adalah teks artikelnya: "${articleText}" Berdasarkan artikel di atas, berikan jawaban HANYA dalam format JSON dengan struktur sebagai berikut: { "ringkasan_paragraf": "Buat ringkasan singkat dalam satu paragraf (sekitar 3-4 kalimat) yang mencakup ide utama artikel.", "poin_utama": ["Ekstrak poin kunci pertama dari artikel.", "Ekstrak poin kunci kedua yang penting.", "Ekstrak poin kunci ketiga yang relevan."] }`;
-    
     const modelIdentifier = "ibm-granite/granite-3.3-8b-instruct";
-    
-    const output = await replicate.run(modelIdentifier, {
-        input: {
-            prompt: prompt,
-            prompt_template: "<|user|>\n{prompt}\n<|assistant|>\n",
-            max_new_tokens: 512,
-            temperature: 0.7,
-        }
-    });
-
+    const output = await replicate.run(modelIdentifier, { input: { prompt: prompt, prompt_template: "<|user|>\n{prompt}\n<|assistant|>\n", max_new_tokens: 512, temperature: 0.7 } });
     const resultString = output.join('');
     const jsonMatch = resultString.match(/\{[\s\S]*\}/);
     if (jsonMatch && jsonMatch[0]) {
@@ -70,13 +44,19 @@ app.post('/', async (req, res) => {
     } else {
         throw new Error('Output AI tidak mengandung format JSON yang valid.');
     }
-
   } catch (error) {
     console.error('[Vercel Function Error]', error.message);
-    res.status(500).json({ error: 'Terjadi kesalahan internal saat memproses permintaan Anda.' });
+    res.status(500).json({ error: 'Terjadi kesalahan internal.' });
   }
 });
 
-// Pastikan tidak ada app.listen() di sini.
-// Kita ekspor 'app' agar Vercel bisa menjalankannya.
+// Rute untuk menyajikan file frontend dari folder 'public'
+app.use(express.static(path.join(__dirname, 'public')));
+// Rute catch-all untuk menyajikan index.html jika rute lain tidak cocok (penting untuk refresh halaman)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// TIDAK ADA app.listen()
+// Ekspor 'app' agar bisa digunakan oleh Vercel
 module.exports = app;
