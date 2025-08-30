@@ -21,7 +21,7 @@ body {
 /* --- Wadah Utama --- */
 .container {
     width: 100%;
-    max-width: 800px;
+    max-width: 700px;
     box-sizing: border-box;
     background-color: #FFFFFF;
     padding: 40px;
